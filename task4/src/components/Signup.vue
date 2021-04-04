@@ -5,15 +5,15 @@
       <table>
         <tr>
           <td>ユーザ名</td>
-          <td><input type="text" placeholder="UserName" v-model="username"></td>
+          <td><input type="text" placeholder="UserName" @input="registUserName"></td>
         </tr>
         <tr>
           <td>メールアドレス</td>
-          <td><input type="text" placeholder="E-mail" v-model="email"></td>
+          <td><input type="text" placeholder="E-mail" @input="registEmail"></td>
         </tr>
         <tr>
           <td>パスワード</td>
-          <td><input type="text" placeholder="Password" v-model="password"></td>
+          <td><input type="text" placeholder="Password" @input="registPassword"></td>
         </tr>
       </table>
       <button @click="signUp">新規登録</button>
@@ -23,27 +23,23 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+
 
 export default {
   name: 'Signup',
-  data() {
-    return {
-      username: '',
-      email: '',
-      password: ''
-    }
-  },
   methods: {
-    signUp: function () {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          alert('登録しました', user.username)
-        })
-        .catch(error => {
-          alert(error.message)
-        })
-    }
+    registUserName(e) {
+      this.$store.commit('registUserName',e.target.value)
+    },
+    registEmail(e) {
+      this.$store.commit('registEmail',e.target.value)
+    },
+    registPassword(e) {
+      this.$store.commit('registPassword',e.target.value)
+    },    
+    signUp() {
+      this.$store.dispatch('signUp')
+    },
   },
 }
 </script>
