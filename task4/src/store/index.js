@@ -25,11 +25,20 @@ export default new Vuex.Store({
     registPassword(state, password) {
       state.password = password
     },
+    loginEmail(state, email) {
+      state.email = email
+    },
+    loginPassword(state, password) {
+      state.password = password
+    },
     successRegistration(user) {
       alert('登録しました', user)
     },
-    errorRegistration(error) {
-      alert(error)
+    successLogin(user) {
+      alert('ログインしました', user)
+    },
+    errorMessage(error) {
+      alert('エラー', error)
     },
   },
   actions: {
@@ -39,7 +48,16 @@ export default new Vuex.Store({
         commit('successRegistration', user.username)
       })
       .catch(error => {
-        commit('errorRegistration', error.message)
+        commit('errorMessage', error.message)
+      })
+    },
+    signIn({ commit, state }) {
+      firebase.auth().signInWithEmailAndPassword(state.email, state.password)
+      .then(user => {
+        commit('successLogin', user.username)
+      })
+      .catch(error => {
+        commit('errorMessage', error.message)
       })
     }
   },

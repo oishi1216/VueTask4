@@ -17,7 +17,7 @@
         </tr>
       </table>
       <button @click="signUp">新規登録</button>
-      <p><a href="#">ログインはこちらから</a></p>
+      <p><router-link to="/Signin">ログインはこちらから</router-link></p>
     </div>
   </div>
 </template>
