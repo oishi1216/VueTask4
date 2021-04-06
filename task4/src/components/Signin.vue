@@ -5,11 +5,11 @@
       <table>
         <tr>
           <td>メールアドレス</td>
-          <td><input type="text" placeholder="E-mail" @input="loginEmail"></td>
+          <td><input type="text" placeholder="E-mail" v-model="loginEmail"></td>
         </tr>
         <tr>
           <td>パスワード</td>
-          <td><input type="text" placeholder="Password" @input="loginPassword"></td>
+          <td><input type="text" placeholder="Password" v-model="loginPassword"></td>
         </tr>
       </table>
       <button @click="signIn">ログイン</button>
@@ -19,20 +19,26 @@
 </template>
 
 <script>
-
+import firebase from "/src/utiles/firebase";
 
 export default {
   name: 'Signin',
-  methods: {
-    loginEmail(e) {
-      this.$store.commit('loginEmail', e.target.value)
-    },
-    loginPassword(e) {
-      this.$store.commit('loginPassword', e.target.value)
-    },    
+  data() {
+    return {
+      loginEmail: '',
+      loginPassword: ''
+    };
+  },
+  methods: { 
     signIn() {
-      this.$store.dispatch('signIn')
-    },
+      firebase.auth().signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
+      .then(user => {
+        alert('ログインしました', user)
+      })
+      .catch(error => {
+        alert('エラー', error)
+      })
+    }
   },
 }
 </script>

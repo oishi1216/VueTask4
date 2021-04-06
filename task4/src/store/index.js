@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     username: '',
     email: '',
-    password: ''
+    password: '',
+    user: null
   },
   getters: {
     username: (state) => state.username,
@@ -25,41 +26,21 @@ export default new Vuex.Store({
     registPassword(state, password) {
       state.password = password
     },
-    loginEmail(state, email) {
-      state.email = email
-    },
-    loginPassword(state, password) {
-      state.password = password
-    },
-    successRegistration(user) {
-      alert('登録しました', user)
-    },
-    successLogin(user) {
-      alert('ログインしました', user)
-    },
-    errorMessage(error) {
-      alert('エラー', error)
-    },
+    setUser(state, payload) {
+      state.user = payload;
+    }
   },
   actions: {
-    signUp({ commit, state }) {
+    signUp({commit, state}) {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
       .then(user => {
-        commit('successRegistration', user.username)
+        commit('setUser', user);
+        alert('登録しました')
       })
       .catch(error => {
-        commit('errorMessage', error.message)
+        alert(error.message)
       })
     },
-    signIn({ commit, state }) {
-      firebase.auth().signInWithEmailAndPassword(state.email, state.password)
-      .then(user => {
-        commit('successLogin', user.username)
-      })
-      .catch(error => {
-        commit('errorMessage', error.message)
-      })
-    }
   },
   modules: {
   }
