@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import firebase from "/src/utiles/firebase";
-
 export default {
   name: 'Signin',
   data() {
@@ -30,15 +28,11 @@ export default {
     };
   },
   methods: { 
-    signIn() {
-      firebase.auth().signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
-      .then(user => {
-        alert('ログインしました', user)
-      })
-      .catch(error => {
-        alert('エラー', error)
-      })
-    }
+      signIn() {
+      this.$store.dispatch('signIn', { 
+        email: this.loginEmail,
+        password: this.loginPassword})
+    },
   },
 }
 </script>

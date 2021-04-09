@@ -29,13 +29,13 @@ export default {
   name: 'Signup',
   methods: {
     registUserName(e) {
-      this.$store.commit('registUserName',e.target.value)
+      this.$store.commit('registUserName', e.target.value)
     },
     registEmail(e) {
-      this.$store.commit('registEmail',e.target.value)
+      this.$store.commit('registEmail', e.target.value)
     },
     registPassword(e) {
-      this.$store.commit('registPassword',e.target.value)
+      this.$store.commit('registPassword', e.target.value)
     },    
     signUp() {
       this.$store.dispatch('signUp')
