@@ -30,10 +30,9 @@ export default new Vuex.Store({
     registPassword(state, password) {
       state.password = password
     },
-    setUser(state, payload) {
-      state.username = payload.userName
-      state.uid = payload.uid
-      state.wallet = payload.wallet
+    setUser(state, { nameData, walletData }) {
+      state.username = nameData
+      state.wallet = walletData
     }
   },
   actions: {
@@ -59,8 +58,9 @@ export default new Vuex.Store({
             const user = db.collection('userData').doc(userInfo.uid);
             user.get().then((doc) => {
           
-              const data = doc.data();
-              commit('setUser', data);
+              const nameData = doc.data().userName;
+              const walletData = doc.data().wallet;
+              commit('setUser', { nameData, walletData });
           
             }).catch((error)=>{
               alert(error.message)
