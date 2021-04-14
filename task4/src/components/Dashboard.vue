@@ -5,13 +5,38 @@
     </div>
     <div class="info">
       <p class="wallet">残高：{{ wallet }}</p>
+      <button class="logout" @click="logout">ログアウト</button>
     </div>
     <h1>ユーザ一覧</h1>
   </div>
 </template>
 
 <script>
+import firebase from "/src/utiles/firebase";
+import router from '../router'
+
 export default {
+  name: 'Dashboard',
+  data() {
+    return {
+      authUser: false
+    };
+  },
+  mounted(){
+    firebase.auth().onAuthStateChanged((loginUser) => {
+      if (loginUser) {
+        this.authUser = true;
+      } else {
+        this.authUser = false;
+        router.push('/Signin')
+      }
+    });     
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+    }
+  },
   computed: {
     username() {
       return this.$store.getters.username
@@ -24,6 +49,11 @@ export default {
 </script>
 
 <style>
+button.logout {
+  padding: 1px 5px;
+  margin: 0 0 0 10px;
+}
+
 .contents {
   margin: 0 auto;
   width: 80%;
