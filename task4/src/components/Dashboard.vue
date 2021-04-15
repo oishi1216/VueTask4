@@ -12,25 +12,12 @@
 </template>
 
 <script>
-import firebase from "/src/utiles/firebase";
-import router from '../router'
-
 export default {
   name: 'Dashboard',
   data() {
     return {
       authUser: false
     };
-  },
-  mounted(){
-    firebase.auth().onAuthStateChanged((loginUser) => {
-      if (loginUser) {
-        this.authUser = true;
-      } else {
-        this.authUser = false;
-        router.push('/Signin')
-      }
-    });     
   },
   methods: {
     logout() {
