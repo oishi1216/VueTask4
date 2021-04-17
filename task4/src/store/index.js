@@ -89,8 +89,9 @@ export default new Vuex.Store({
       
         user.get().then((doc) => {
       
-          const data = doc.data();
-          commit('setUser', data);
+          const nameData = doc.data().userName;
+          const walletData = doc.data().wallet;
+          commit('setUser', { nameData, walletData });
       
         }).catch((error)=>{
           alert(error.message)
@@ -102,6 +103,15 @@ export default new Vuex.Store({
       .catch(error => {
         alert('エラー', error)
       })
+    },
+    logout() {
+      firebase.auth().signOut()
+      .then(() => {
+        router.push('/Signin');
+      })
+      .catch(() => {
+        alert('ログアウト失敗')
+      });
     }
   },
   modules: {
