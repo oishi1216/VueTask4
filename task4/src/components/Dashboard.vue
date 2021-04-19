@@ -5,7 +5,7 @@
     </div>
     <div class="info">
       <p class="wallet">残高：{{ wallet }}</p>
-      <button class="logout" @click="logout">ログアウト</button>
+      <button class="logOut" @click="logOut">ログアウト</button>
     </div>
     <h1>ユーザ一覧</h1>
       <table class="list">
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style>
-button.logout {
+button.logOut {
   padding: 1px 5px;
   margin: 0 0 0 10px;
 }
