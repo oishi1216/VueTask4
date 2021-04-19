@@ -1,12 +1,13 @@
 <template>
   <transition name="modal" appear>
-    <div id="overlay" @click="$emit('close')">
+    <div id="overlay" @click="closeModal2">
       <div class="window">
         <div id="content" @click="stopEvent">
-          <p> {{name}} さんの残高</p>
-          <p> {{wallet}} </p>
+          <p class="balance">あなたの残高: {{ wallet }} </p>
+          <p>送る金額</p>
+          <input type="text" v-model="sendAmount">
           <footer class="modal-footer">
-            <button @click="$emit('close')">送信</button>
+            <button @click="sendWallet">送信</button>
           </footer>
         </div>
       </div>
@@ -16,32 +17,35 @@
 
 <script>
 export default {
-  name: "Modal",
-  props: [
-    "name",
-    "wallet"
-  ],
+  name: "Modal2",
+  data() {
+    return {
+      sendAmount: '',
+    };
+  },
   methods: {
     stopEvent: function(){
       event.stopPropagation()
-    }
+    },
+    sendWallet() {
+      this.$store.dispatch('sendWallet', this.sendAmount)
+    },
+    closeModal2() {
+      this.$store.commit('closeModal2')
+    },
+  },
+  computed: {
+    wallet() {
+      return this.$store.getters.wallet
+    },
   },
 };
 </script>
 
 <style>
-#content{
-  z-index:10;
-  width: 30%;
-  background-color:#fff;
-  border-radius: 4px;
-  position: fixed;
-  top: 82%;
-  left:35%;
-}
-
-#content p {
-  margin: 10px 0;
+#content input {
+  width: 80%;
+  margin: 10px 0 0 0;
 }
 
 #overlay{

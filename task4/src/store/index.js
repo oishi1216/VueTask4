@@ -12,13 +12,23 @@ export default new Vuex.Store({
     email: '',
     password: '',
     wallet: '',
-    uid: ''
+    uid: '',
+    showModal1: false,
+    showModal2: false,
+    userNm: '',
+    userWt: '',
+    userUd: '',
   },
   getters: {
     username: (state) => state.username,
     email: (state) => state.email,
     password: (state) => state.password,
-    wallet: (state) => state.wallet
+    wallet: (state) => state.wallet,
+    showModal1: (state) => state.showModal1,
+    showModal2: (state) => state.showModal2,
+    userNm: (state) => state.userNm,
+    userWt: (state) => state.userWt,
+    userUd: (state) => state.userUd,
   },
   mutations: {
     registUserName(state, username) {
@@ -33,7 +43,32 @@ export default new Vuex.Store({
     setUser(state, { nameData, walletData }) {
       state.username = nameData
       state.wallet = walletData
-    }
+    },
+    setUserInfo(state, user) {
+      state.userNm = user.userName
+      state.userWt = user.wallet
+      state.userUd = user.uid
+    },
+    setWallet(state, nowWallet) {
+      state.wallet = nowWallet
+      console.log(state.wallet)
+    },
+    setYourWallet(state, yourWallet) {
+      state.userWt = yourWallet
+      console.log(state.userWt)
+    },
+    openModal1(state) {
+      state.showModal1 = true
+    },
+    openModal2(state) {
+      state.showModal2 = true
+    },
+    closeModal1(state) {
+      state.showModal1 = false
+    },
+    closeModal2(state) {
+      state.showModal2 = false
+    },
   },
   actions: {
     signUp({commit, state}) {
@@ -104,13 +139,41 @@ export default new Vuex.Store({
         alert('エラー', error)
       })
     },
-    logout() {
+    logOut() {
       firebase.auth().signOut()
       .then(() => {
         router.push('/Signin');
       })
       .catch(() => {
         alert('ログアウト失敗')
+      });
+    },
+    sendWallet({ commit, state }, sendAmount) {
+      let nowWallet = state.wallet - sendAmount
+      const userInfo = firebase.auth().currentUser
+      const db = firebase.firestore()
+      db.collection("userData").doc(userInfo.uid).update({
+        wallet: nowWallet
+      }).then(() => {
+        commit('setWallet', nowWallet);
+
+        const num1 = parseInt(state.userWt)
+        const num2 = parseInt(sendAmount)
+        let yourWallet = num1 + num2
+            
+        const db = firebase.firestore()
+        db.collection("userData").doc(state.userUd).update({
+          wallet: yourWallet
+        }).then(() => {
+          commit('setYourWallet', yourWallet);
+          commit('closeModal2');
+        })
+        .catch(() => {
+          alert('送金失敗')
+        });
+      })
+      .catch(() => {
+        alert('送金失敗')
       });
     }
   },

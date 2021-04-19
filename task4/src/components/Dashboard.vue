@@ -17,28 +17,27 @@
         <tbody>
           <tr v-for="(user) in userList" :value="user" :key="user.id">
             <td class="userName"> {{user.userName}} </td>
-            <td><button @click="openModal(user)">walletを見る</button></td>
-            <td><button>送る</button></td>
+            <td><button @click="openModal1(user)">walletを見る</button></td>
+            <td><button @click="openModal2(user)">送る</button></td>
           </tr>
         </tbody>        
       </table>
-      <modal v-if="showModal" @close="showModal = false" :name="userNm" :wallet="userWallet"></modal>
+      <modal1 v-if="showModal1"></modal1>
+      <modal2 v-if="showModal2"></modal2>
   </div>
 </template>
 
 <script>
 import firebase from "/src/utiles/firebase";
-import Modal from "/src/components/Modal";
+import Modal1 from "/src/components/Modal1";
+import Modal2 from "/src/components/Modal2";
 
 export default {
   name: 'Dashboard',
   data() {
     return {
       authUser: false,
-      showModal: false,
-      userNm: '',
-      userWallet: '',
-      userList: []
+      userList: [],
     };
   },
   mounted() {
@@ -50,14 +49,18 @@ export default {
     });
   },
   methods: {
-    logout() {
-      this.$store.dispatch('logout')
+    logOut() {
+      this.$store.dispatch('logOut')
     },
-    openModal: function(user){
-      this.showModal = true
-      this.userNm = user.userName
-      this.userWallet = user.wallet
+    openModal1: function(user){
+      this.$store.commit('openModal1')
+      this.$store.commit('setUserInfo', user)
     },
+    openModal2: function(user){
+      this.$store.commit('openModal2')
+      this.$store.commit('setUserInfo', user)
+    },
+
   },
   computed: {
     username() {
@@ -66,10 +69,17 @@ export default {
     wallet() {
       return this.$store.getters.wallet
     },
+    showModal1() {
+      return this.$store.getters.showModal1
+    },
+    showModal2() {
+      return this.$store.getters.showModal2
+    },
   },
   components: {
-    Modal
-  }
+    Modal1,
+    Modal2
+  },
 }
 </script>
 
