@@ -18,6 +18,8 @@ export default new Vuex.Store({
     userNm: '',
     userWt: '',
     userUd: '',
+    userList: [],
+    index: '',
   },
   getters: {
     username: (state) => state.username,
@@ -29,6 +31,7 @@ export default new Vuex.Store({
     userNm: (state) => state.userNm,
     userWt: (state) => state.userWt,
     userUd: (state) => state.userUd,
+    userList: (state) => state.userList,
   },
   mutations: {
     registUserName(state, username) {
@@ -44,18 +47,24 @@ export default new Vuex.Store({
       state.username = nameData
       state.wallet = walletData
     },
-    setUserInfo(state, user) {
+    setUserInfo(state, { user, index }) {
       state.userNm = user.userName
       state.userWt = user.wallet
       state.userUd = user.uid
+      state.index = index
+      console.log(state.index)
     },
-    setWallet(state, nowWallet) {
+    setWallet(state, { nowWallet, userInfo }) {
       state.wallet = nowWallet
-      console.log(state.wallet)
+      for (let i=0; i<state.userList.length; i++) {
+        if (state.userList[i].uid === userInfo.uid) {
+          state.userList[i].wallet = nowWallet
+        }
+      }
     },
     setYourWallet(state, yourWallet) {
       state.userWt = yourWallet
-      console.log(state.userWt)
+      state.userList[state.index].wallet = yourWallet
     },
     openModal1(state) {
       state.showModal1 = true
@@ -68,6 +77,14 @@ export default new Vuex.Store({
     },
     closeModal2(state) {
       state.showModal2 = false
+    },
+    resetUserList(state) {
+      state.userList.splice(0)
+    },
+    createUserList(state, snap) {
+      snap.forEach(doc => {
+        state.userList.push(doc.data());
+      });
     },
   },
   actions: {
@@ -155,7 +172,7 @@ export default new Vuex.Store({
       db.collection("userData").doc(userInfo.uid).update({
         wallet: nowWallet
       }).then(() => {
-        commit('setWallet', nowWallet);
+        commit('setWallet', { nowWallet, userInfo });
 
         const num1 = parseInt(state.userWt)
         const num2 = parseInt(sendAmount)
@@ -175,7 +192,13 @@ export default new Vuex.Store({
       .catch(() => {
         alert('送金失敗')
       });
-    }
+    },
+    createUserList({ commit }) {
+      const db = firebase.firestore();
+      db.collection('userData').get().then(snap => {
+        commit('createUserList', snap)
+      });
+    },
   },
   modules: {
   }

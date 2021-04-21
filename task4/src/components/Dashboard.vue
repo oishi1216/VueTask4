@@ -15,10 +15,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(user) in userList" :value="user" :key="user.id">
+          <tr v-for="(user, index) in userList" :value="user" :key="user.id">
             <td class="userName"> {{user.userName}} </td>
-            <td><button @click="openModal1(user)">walletを見る</button></td>
-            <td><button @click="openModal2(user)">送る</button></td>
+            <td><button @click="openModal1({ user, index })">walletを見る</button></td>
+            <td><button @click="openModal2({ user, index })">送る</button></td>
           </tr>
         </tbody>        
       </table>
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import firebase from "/src/utiles/firebase";
 import Modal1 from "/src/components/Modal1";
 import Modal2 from "/src/components/Modal2";
 
@@ -37,30 +36,24 @@ export default {
   data() {
     return {
       authUser: false,
-      userList: [],
     };
   },
   mounted() {
-    const db = firebase.firestore();
-    db.collection('userData').get().then(snap => {
-      snap.forEach(doc => {
-        this.userList.push(doc.data());
-      });
-    });
+    this.$store.commit('resetUserList')
+    this.$store.dispatch('createUserList')
   },
   methods: {
     logOut() {
       this.$store.dispatch('logOut')
     },
-    openModal1: function(user){
+    openModal1: function({ user, index }){
       this.$store.commit('openModal1')
-      this.$store.commit('setUserInfo', user)
+      this.$store.commit('setUserInfo', { user, index })
     },
-    openModal2: function(user){
+    openModal2: function({ user, index }){
       this.$store.commit('openModal2')
-      this.$store.commit('setUserInfo', user)
+      this.$store.commit('setUserInfo', { user, index })
     },
-
   },
   computed: {
     username() {
@@ -74,6 +67,9 @@ export default {
     },
     showModal2() {
       return this.$store.getters.showModal2
+    },
+    userList() {
+      return this.$store.getters.userList
     },
   },
   components: {

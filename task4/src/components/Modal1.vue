@@ -4,7 +4,7 @@
       <div class="window">
         <div id="content" @click="stopEvent">
           <p class="balance"> {{ userNm }} さんの残高</p>
-          <p class="myWallet" v-if="show" :key="refreshKey"> {{ userWt }} </p>
+          <p class="myWallet"> {{ userWt }} </p>
           <footer class="modal-footer">
             <button @click="closeModal1">close</button>
           </footer>
@@ -17,27 +17,12 @@
 <script>
 export default {
   name: "Modal1",
-    data() {
-    return {
-      show: false,
-      refreshKey: 0
-    };
-  },
-  mounted : function(){
-    this.show = false
-    this.$nextTick(function() {
-      this.show = true
-    });
-    this.refreshKey++
-  },
   methods: {
     stopEvent: function(){
       event.stopPropagation()
     },
     closeModal1() {
       this.$store.commit('closeModal1')
-      this.show = false
-      this.refreshKey++
     },
   },
   computed: {
