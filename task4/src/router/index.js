@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 import Signup from '../components/Signup.vue'
 import Signin from '../components/Signin.vue'
 import Dashboard from '../components/Dashboard.vue'
-import Modal  from '../components/Modal.vue'
+import Modal1  from '../components/Modal1.vue'
+import Modal2  from '../components/Modal2.vue'
 import firebase from "/src/utiles/firebase";
 
 Vue.use(VueRouter)
@@ -26,9 +27,14 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/Modal',
-    name: 'Modal',
-    component: Modal,
+    path: '/Modal1',
+    name: 'Modal1',
+    component: Modal1,
+  },
+  {
+    path: '/Modal2',
+    name: 'Modal2',
+    component: Modal2,
   },
 ]
 

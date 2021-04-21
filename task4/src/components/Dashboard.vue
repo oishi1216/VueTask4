@@ -5,7 +5,7 @@
     </div>
     <div class="info">
       <p class="wallet">残高：{{ wallet }}</p>
-      <button class="logout" @click="logout">ログアウト</button>
+      <button class="logOut" @click="logOut">ログアウト</button>
     </div>
     <h1>ユーザ一覧</h1>
       <table class="list">
@@ -15,48 +15,44 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(user) in userList" :value="user" :key="user.id">
+          <tr v-for="(user, index) in userList" :value="user" :key="user.id">
             <td class="userName"> {{user.userName}} </td>
-            <td><button @click="openModal(user)">walletを見る</button></td>
-            <td><button>送る</button></td>
+            <td><button @click="openModal1({ user, index })">walletを見る</button></td>
+            <td><button @click="openModal2({ user, index })">送る</button></td>
           </tr>
         </tbody>        
       </table>
-      <modal v-if="showModal" @close="showModal = false" :name="userNm" :wallet="userWallet"></modal>
+      <modal1 v-if="showModal1"></modal1>
+      <modal2 v-if="showModal2"></modal2>
   </div>
 </template>
 
 <script>
-import firebase from "/src/utiles/firebase";
-import Modal from "/src/components/Modal";
+import Modal1 from "/src/components/Modal1";
+import Modal2 from "/src/components/Modal2";
 
 export default {
   name: 'Dashboard',
   data() {
     return {
       authUser: false,
-      showModal: false,
-      userNm: '',
-      userWallet: '',
-      userList: []
     };
   },
   mounted() {
-    const db = firebase.firestore();
-    db.collection('userData').get().then(snap => {
-      snap.forEach(doc => {
-        this.userList.push(doc.data());
-      });
-    });
+    this.$store.commit('resetUserList')
+    this.$store.dispatch('createUserList')
   },
   methods: {
-    logout() {
-      this.$store.dispatch('logout')
+    logOut() {
+      this.$store.dispatch('logOut')
     },
-    openModal: function(user){
-      this.showModal = true
-      this.userNm = user.userName
-      this.userWallet = user.wallet
+    openModal1: function({ user, index }){
+      this.$store.commit('openModal1')
+      this.$store.commit('setUserInfo', { user, index })
+    },
+    openModal2: function({ user, index }){
+      this.$store.commit('openModal2')
+      this.$store.commit('setUserInfo', { user, index })
     },
   },
   computed: {
@@ -66,15 +62,25 @@ export default {
     wallet() {
       return this.$store.getters.wallet
     },
+    showModal1() {
+      return this.$store.getters.showModal1
+    },
+    showModal2() {
+      return this.$store.getters.showModal2
+    },
+    userList() {
+      return this.$store.getters.userList
+    },
   },
   components: {
-    Modal
-  }
+    Modal1,
+    Modal2
+  },
 }
 </script>
 
 <style>
-button.logout {
+button.logOut {
   padding: 1px 5px;
   margin: 0 0 0 10px;
 }

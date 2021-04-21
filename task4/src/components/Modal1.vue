@@ -1,12 +1,12 @@
 <template>
   <transition name="modal" appear>
-    <div id="overlay" @click="$emit('close')">
+    <div id="overlay" @click="closeModal1">
       <div class="window">
         <div id="content" @click="stopEvent">
-          <p> {{name}} さんの残高</p>
-          <p> {{wallet}} </p>
+          <p class="balance"> {{ userNm }} さんの残高</p>
+          <p class="myWallet"> {{ userWt }} </p>
           <footer class="modal-footer">
-            <button @click="$emit('close')">送信</button>
+            <button @click="closeModal1">close</button>
           </footer>
         </div>
       </div>
@@ -16,15 +16,22 @@
 
 <script>
 export default {
-  name: "Modal",
-  props: [
-    "name",
-    "wallet"
-  ],
+  name: "Modal1",
   methods: {
     stopEvent: function(){
       event.stopPropagation()
-    }
+    },
+    closeModal1() {
+      this.$store.commit('closeModal1')
+    },
+  },
+  computed: {
+    userNm() {
+      return this.$store.getters.userNm
+    },
+    userWt() {
+      return this.$store.getters.userWt
+    },
   },
 };
 </script>
@@ -36,12 +43,16 @@ export default {
   background-color:#fff;
   border-radius: 4px;
   position: fixed;
-  top: 82%;
+  bottom: 0%;
   left:35%;
 }
 
-#content p {
-  margin: 10px 0;
+.balance {
+  margin: 10px 0px 0px 0px;
+}
+
+.myWallet {
+  margin-top: 15px;
 }
 
 #overlay{
@@ -84,6 +95,7 @@ export default {
   background: #ccc;
   padding: 10px;
   text-align: right;
+  margin-top: 10px;
 }
 
 .modal-footer button {
